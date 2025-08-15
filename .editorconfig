@@ -1,0 +1,14 @@
+# تنظیمات کلی برای همه فایل‌ها
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf    # برای پروژه Nest.js
+insert_final_newline = true
+
+[*.{js,ts,json,md}]
+end_of_line = lf
+
+# اگر پروژه‌های دیگه داری که CRLF بخوان
+[../other-project/**/*]
+end_of_line = crlf
