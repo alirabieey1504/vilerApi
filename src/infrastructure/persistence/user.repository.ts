@@ -9,6 +9,7 @@ export class UserTypeOrmRepository implements IUserRepository {
 
   async save(user: User): Promise<void> {
     const repo = this.dataSource.getRepository(UserEntity);
+    console.log(repo);
     const entity = repo.create({
       id: user.id,
       phoneNumber: user.phoneNumber,
@@ -17,11 +18,11 @@ export class UserTypeOrmRepository implements IUserRepository {
     await repo.save(entity);
   }
 
-  async findById(id: string): Promise<User | null> {
-    const repo = this.dataSource.getRepository(UserEntity);
-    const entity = await repo.findOneBy({ id });
-    if (!entity) return null;
+  // async findById(id: string): Promise<User | null> {
+  //   const repo = this.dataSource.getRepository(UserEntity);
+  //   const entity = await repo.findOneBy({ id });
+  //   if (!entity) return null;
 
-    return new User(entity.id, entity.phoneNumber, entity.role as any);
-  }
+  //   return new User(entity.id, entity.phoneNumber, entity.role as any);
+  // }
 }
