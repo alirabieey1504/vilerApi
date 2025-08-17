@@ -1,16 +1,27 @@
-//اتصال به دیتابیس typeorm prisma
-import { IUserRepository } from '../../domain/user/user.repository.interface';
-import { User } from '../../domain/user/user.entity';
+// infrastructure/repositories/UserTypeOrmRepository.ts
+import { DataSource } from 'typeorm';
+import { UserEntity } from '../entities/userEntity';
+import { IUserRepository } from '../../domin/user/user.repository.interface';
+import { User } from '../../domin/user/user.entity';
 
-export class UserRepository implements IUserRepository {
-  private users: User[] = []; // شبیه دیتابیس ساده
-
-  async findByEmail(email: string): Promise<User | null> {
-    const user = this.users.find((u) => u.email === email);
-    return user || null;
-  }
+export class UserTypeOrmRepository implements IUserRepository {
+  constructor(private readonly dataSource: DataSource) {}
 
   async save(user: User): Promise<void> {
-    this.users.push(user);
+    const repo = this.dataSource.getRepository(UserEntity);
+    const entity = repo.create({
+      id: user.id,
+      phoneNumber: user.phoneNumber,
+      role: user.Role,
+    });
+    await repo.save(entity);
+  }
+
+  async findById(id: string): Promise<User | null> {
+    const repo = this.dataSource.getRepository(UserEntity);
+    const entity = await repo.findOneBy({ id });
+    if (!entity) return null;
+
+    return new User(entity.id, entity.phoneNumber, entity.role as any);
   }
 }

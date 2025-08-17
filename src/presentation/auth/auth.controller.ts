@@ -1,23 +1,17 @@
-//گرفتن درخواست و پاس دادن به use case
+// user.controller.ts
 import { Controller, Post, Body } from '@nestjs/common';
-import { RegisterUserUseCase } from '../../application/user/register-user.usecase';
-import { UserRepository } from '../../infrastructure/user/user.repository';
+import { RegisterUserUseCase } from '../../application/auth/register/register-sendto-phone-user.usecase';
+import { UserRole } from '../../domin/user/user.entity';
 
 @Controller('users')
 export class UserController {
-  private registerUserUseCase: RegisterUserUseCase;
-
-  constructor() {
-    const repo = new UserRepository();
-    this.registerUserUseCase = new RegisterUserUseCase(repo);
-  }
+  constructor(private readonly registerUser: RegisterUserUseCase) {}
 
   @Post('register')
-  async register(@Body() body: { email: string; password: string }) {
-    const user = await this.registerUserUseCase.execute(
-      body.email,
-      body.password,
-    );
-    return { id: user.id, email: user.email };
+  async register(
+    @Body() body: { id: string; phoneNumber: string; role: UserRole },
+  ) {
+    await this.registerUser.execute(body.id, body.phoneNumber, body.role);
+    return { message: 'User registered successfully' };
   }
 }
