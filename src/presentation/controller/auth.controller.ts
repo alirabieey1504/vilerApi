@@ -8,6 +8,6 @@ export class UserController {
 
   @Get('register')
   register() {
-    return 'ok';
+    return { message: 'ok', status: 200 };
   }
 }
