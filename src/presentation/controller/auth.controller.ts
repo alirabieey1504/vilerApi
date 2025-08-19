@@ -1,13 +1,15 @@
 // user.controller.ts
-import { Controller, Get, Body } from '@nestjs/common';
+import { Controller, Body, Post } from '@nestjs/common';
 import { RegisterUserUseCase } from '../../application/auth/register/register-sendto-phone-user.usecase';
+import { RegisterDto } from '../dto/registerdto';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly registerUser: RegisterUserUseCase) {}
 
-  @Get('register')
-  register() {
-    return { message: 'ok', status: 200 };
+  @Post('register')
+  async register(@Body() body: RegisterDto) {
+    console.log(body, 'this is obdy');
+    await this.registerUser.execute(body.phoneNumber);
   }
 }
