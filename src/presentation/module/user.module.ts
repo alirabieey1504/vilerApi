@@ -4,7 +4,7 @@ import { RegisterUserUseCase } from '../../application/auth/register/register-se
 import { UserTypeOrmRepository } from '../../infrastructure/persistence/user.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../../infrastructure/entities/userEntity';
-
+import { DataSource } from 'typeorm';
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity])],
   controllers: [UserController],
@@ -12,7 +12,9 @@ import { UserEntity } from '../../infrastructure/entities/userEntity';
     RegisterUserUseCase,
     {
       provide: 'IUserRepository',
-      useClass: UserTypeOrmRepository,
+      useFactory: (dataSource: DataSource) =>
+        new UserTypeOrmRepository(dataSource),
+      inject: [DataSource],
     },
   ],
 })

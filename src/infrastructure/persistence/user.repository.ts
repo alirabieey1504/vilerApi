@@ -3,19 +3,39 @@ import { DataSource } from 'typeorm';
 import { UserEntity } from '../entities/userEntity';
 import { IUserRepository } from '../../domin/user/user.repository.interface';
 import { User } from '../../domin/user/user.entity';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class UserTypeOrmRepository implements IUserRepository {
   constructor(private readonly dataSource: DataSource) {}
 
-  async save(user: User): Promise<void> {
+  async save(user: User): Promise<object> {
+    console.log(user, 'this is user in repo');
     const repo = this.dataSource.getRepository(UserEntity);
-    console.log(repo);
-    const entity = repo.create({
-      id: user.id,
-      phoneNumber: user.phoneNumber,
-      role: user.Role,
+    const existingUser = await repo.findOne({
+      where: { phoneNumber: user.phoneNumber },
     });
-    await repo.save(entity);
+    console.log(existingUser, 'thi is exxx3');
+    const exit = !!existingUser;
+    if (exit) {
+      console.log(repo);
+      console.log('کاربر وچود داشت');
+      return {
+        message: 'شماره شما از قبل وجود داشت ',
+        user: 'ali',
+      };
+    } else {
+      const entity = repo.create({
+        id: user.id,
+        phoneNumber: user.phoneNumber,
+        role: user.role,
+      });
+      await repo.save(entity);
+      console.log('کاربری یافت نشد');
+      return {
+        message: 'کاربر با موفقیت ساخته شد',
+      };
+    }
   }
 
   // async findById(id: string): Promise<User | null> {

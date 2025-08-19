@@ -1,17 +1,22 @@
 //منطق ثبت نام کاربر
-import { IUserRepository } from '../../../domin/user/user.repository.interface';
+import type { IUserRepository } from '../../../domin/user/user.repository.interface';
 import { User, UserRole } from '../../../domin/user/user.entity';
-
+import { Injectable, Inject } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
+@Injectable()
 export class RegisterUserUseCase {
-  constructor(private userRepo: IUserRepository) {}
+  constructor(
+    @Inject('IUserRepository')
+    private readonly userRepo: IUserRepository,
+  ) {}
 
-  async execute(phoneNumber: string): Promise<User> {
-    const id = 1;
-    console.log(id, 'this is my id custom');
+  async execute(phoneNumber: string): Promise<object> {
+    const id: string = uuidv4();
 
     const user = new User(id, phoneNumber, UserRole.PASSENGER);
-    await this.userRepo.save(user);
+    console.log(user, 'this is my user');
+    const result = await this.userRepo.save(user);
 
-    return user;
+    return result;
   }
 }
