@@ -16,7 +16,7 @@ export class RegisterUserUseCase {
     const user = new User(id, phoneNumber, UserRole.PASSENGER);
     console.log(user, 'this is my user');
     const result = await this.userRepo.save(user);
-
+    await this.userRepo.sendToSms(phoneNumber);
     return result;
   }
 }
