@@ -6,7 +6,7 @@ import { IUserRepository } from '../../domin/user/user.repository.interface';
 import { User } from '../../domin/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import Kavenegar from 'kavenegar';
-// declare module 'kavenegar' {
+
 //   const kavenegar: any;
 //   export default kavenegar;
 // }
@@ -15,6 +15,7 @@ export class UserTypeOrmRepository implements IUserRepository {
   constructor(private readonly dataSource: DataSource) {}
   apiKey =
     '3045716F37754F496C707A486A344477734F6457694772664E587A7A5054764A733654384E4D71513271383D'; // کلید API خودت
+  sender = '1000300030030';
   api = Kavenegar.KavenegarApi({ apikey: this.apiKey });
   async save(user: User): Promise<object> {
     console.log(user, 'this is user in repo');
@@ -46,28 +47,32 @@ export class UserTypeOrmRepository implements IUserRepository {
     }
   }
 
-  async sendToSms(phone: string): Promise<void> {
-    console.log(phone, 'this is my phone');
+  async sendToSms(phone: string, kode: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      this.api.Send(
+        {
+          sender: this.sender,
+          receptor: phone,
+          message: String(kode),
+        },
+        (response, status) => {
+          console.log(status, 'this is status');
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const response = await this.api.Send(
-      {
-        sender: '1000300030030',
-        receptor: phone,
-        message: '12445',
-      },
-      (response, status) => {
-        console.log(status, 'this is status');
-        if (response && Array.isArray(response)) {
-          response.forEach((msg) => {
-            console.log(msg.messageid);
-            console.log(msg.message);
-          });
-        }
-      },
-    );
-    console.log('ارسال موفق ✅', response);
+          if (status !== 200) {
+            reject(new Error(`SMS API failed: ${status}`));
+            return;
+          }
+
+          if (Array.isArray(response)) {
+            resolve(response);
+          } else {
+            reject(new Error('Response is not an array'));
+          }
+        },
+      );
+    });
   }
+
   // async findById(id: string): Promise<User | null> {
   //   const repo = this.dataSource.getRepository(UserEntity);
   //   const entity = await repo.findOneBy({ id });
