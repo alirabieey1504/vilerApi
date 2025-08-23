@@ -10,7 +10,7 @@ export class UserController {
   @Post('register')
   async register(@Body() body: RegisterDto) {
     console.log(body, 'this is obdy');
-    const result = await this.registerUser.execute(body.phoneNumber);
+    const result = await this.registerUser.execute(body.phoneNumber, body.step);
     console.log(result, 'this is resuld3');
     return result;
   }

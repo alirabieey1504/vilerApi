@@ -1,3 +1,3 @@
 export interface ISaveCodeRepository {
-  saveCode(): Promise<void>;
+  saveCode(code: number): Promise<void>;
 }

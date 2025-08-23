@@ -6,5 +6,8 @@ export class verifyCodeRepository implements ISaveCodeRepository {
     @Inject('CACHE_MANAGER')
     private CacheManager: Cache,
   ) {}
-  async saveCode(): Promise<void> {}
+  async saveCode(code: number): Promise<void> {
+    console.log(code, 'this is my code');
+    await this.CacheManager.set('code', code);
+  }
 }
