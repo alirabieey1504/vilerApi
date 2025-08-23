@@ -1,12 +1,18 @@
 import { Module } from '@nestjs/common';
 import { UserController } from '../controller/auth.controller';
-import { RegisterUserUseCase } from '../../application/auth/register/register-sendto-phone-user.usecase';
-import { UserTypeOrmRepository } from '../../infrastructure/persistence/user.repository';
+import { RegisterUserUseCase } from '../../application/auth/register/saveUser.usecase';
+import { UserTypeOrmRepository } from '../../infrastructure/persistence/registerRepository/user.save.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../../infrastructure/entities/userEntity';
 import { DataSource } from 'typeorm';
+import { CacheModule } from '@nestjs/cache-manager';
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity])],
+  imports: [
+    TypeOrmModule.forFeature([UserEntity]),
+    CacheModule.register({
+      ttl: 120,
+    }),
+  ],
   controllers: [UserController],
   providers: [
     RegisterUserUseCase,

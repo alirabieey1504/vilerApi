@@ -7,5 +7,7 @@ export class User {
     public readonly id: string,
     public readonly phoneNumber: string,
     public readonly role: UserRole = UserRole.PASSENGER,
+    public readonly code?: number,
+    public readonly dateRegisterCode?: string,
   ) {}
 }
