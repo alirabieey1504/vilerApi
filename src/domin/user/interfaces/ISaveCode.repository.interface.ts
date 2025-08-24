@@ -1,3 +1,4 @@
 export interface ISaveCodeRepository {
-  saveCode(code: number): Promise<void>;
+  saveCode(phoneNumber: string, code: number): Promise<void>;
+  verifyUser(phoneNumber: string, InputCode: number): Promise<boolean>;
 }

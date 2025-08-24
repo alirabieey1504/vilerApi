@@ -3,5 +3,7 @@ export class RegisterDto {
   @IsString()
   phoneNumber!: string;
   @IsNumber()
-  step: number = 1;
+  step!: number;
+  @IsNumber()
+  InputCode!: number;
 }

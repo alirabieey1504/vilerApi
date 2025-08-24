@@ -2,7 +2,7 @@ import { DataSource } from 'typeorm';
 import Kavenegar from 'kavenegar';
 import { ICodeSenderRepository } from 'src/domin/user/interfaces/ICodeSender.repository.interface';
 
-export class sendCodeRepository implements ICodeSenderRepository {
+export class SendCodeRepository implements ICodeSenderRepository {
   constructor(private readonly dataSource: DataSource) {}
   apiKey =
     '3045716F37754F496C707A486A344477734F6457694772664E587A7A5054764A733654384E4D71513271383D'; // کلید API خودت
