@@ -5,19 +5,21 @@ import { UserTypeOrmRepository } from '../../infrastructure/persistence/register
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../../infrastructure/entities/userEntity';
 import { DataSource } from 'typeorm';
-import { CacheModule } from '@nestjs/cache-manager';
 import { SendCodeRepository } from '../../infrastructure/persistence/registerRepository/send.code.repository';
 import { VerifyCodeRepository } from '../../infrastructure/persistence/registerRepository/verify.code.repository';
-import * as redisStore from 'cache-manager-redis-store';
+import Redis from 'ioredis';
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity]),
-    CacheModule.register({
-      ttl: 120,
-      stores: redisStore,
-      host: 'localhost',
-      port: 6379,
-    }),
+    // CacheModule.registerAsync({
+    //   isGlobal: true,
+    //   useFactory: () => ({
+    //     store: redisStore,
+    //     host: 'localhost',
+    //     port: 6379,
+    //     ttl: 120,
+    //   }),
+    // }),
   ],
   controllers: [UserController],
   providers: [
@@ -38,6 +40,19 @@ import * as redisStore from 'cache-manager-redis-store';
       provide: 'ISaveCodeRepository',
       useClass: VerifyCodeRepository,
     },
+    {
+      provide: 'REDIS_CLIENT',
+      useFactory: () => {
+        const client = new Redis({
+          host: '127.0.0.1',
+          port: 6379,
+        });
+        client.on('connect', () => console.log('connected'));
+        client.on('eeror', (err) => console.error('redis error', err));
+        return client;
+      },
+    },
   ],
+  exports: ['REDIS_CLIENT'],
 })
 export class UserModule {}
