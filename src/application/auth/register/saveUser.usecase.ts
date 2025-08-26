@@ -26,30 +26,42 @@ export class RegisterUserUseCase {
     }
 
     const id: string = uuidv4();
-
+    const convertToNum = Number(InputCode);
     const randomCode = Math.random() * 1000000;
     const code = Number(String(randomCode).slice(0, 5));
     const user = new User(id, phoneNumber, UserRole.PASSENGER);
 
     if (step == 1) {
-      const result = await this.userRepo.save(user);
-      const result2 = await this.CodeRepo.sendToSms(phoneNumber, code);
-      const result3 = await this.SaveRepo.saveCode(phoneNumber, code);
-      return {
-        res: result,
-        res2: result2,
-        res3: result3,
-      };
+      const getTtl = await this.SaveRepo.getTtl(phoneNumber);
+      if (getTtl == false) {
+        const result = await this.userRepo.save(user);
+        const result3 = await this.SaveRepo.saveCode(phoneNumber, code);
+        const result2 = await this.CodeRepo.sendToSms(phoneNumber, code);
+        return {
+          res: result,
+          res2: result2,
+        };
+      } else
+        return {
+          message: 'please wait a moment',
+          status: 404,
+        };
     } else if (step == 2) {
-      const test = await this.SaveRepo.verifyUser(phoneNumber, InputCode);
-      return {
-        message: 'this is step2',
-        result: test,
-      };
+      const test = await this.SaveRepo.verifyCode(phoneNumber, convertToNum);
+      if (test)
+        return {
+          message: 'با موفقیت وارد شدید',
+          status: 200,
+        };
+      else
+        return {
+          message: 'کد وارد شده صحیح نمی باشد',
+          status: 200,
+        };
     } else {
       return {
-        res: 'message',
-        ref: 'sss',
+        message: 'please enter step',
+        status: 404,
       };
     }
   }

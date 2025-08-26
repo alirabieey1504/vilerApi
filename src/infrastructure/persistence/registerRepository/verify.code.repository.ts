@@ -9,17 +9,20 @@ export class VerifyCodeRepository implements ISaveCodeRepository {
     private redis: Redis,
   ) {}
   async saveCode(phoneNumber: string, code: number): Promise<void> {
-    console.log(code, 'this is my code');
-    console.log(phoneNumber, 'this is phone');
-    await this.redis.set(`code:${phoneNumber}`, code);
-    const thisss = await this.redis.get(`code:${phoneNumber}`);
-    console.log(thisss, 'this is sss5234');
+    await this.redis.set(`code:${phoneNumber}`, code, 'EX', 120);
   }
-  async verifyUser(phoneNumber: string, InputCode: number): Promise<boolean> {
-    console.log(phoneNumber, InputCode);
-    const result = await this.redis.get(`code:${phoneNumber}`);
-    console.log(result, 'this is fff');
-
-    return true;
+  async verifyCode(phoneNumber: string, InputCode: number): Promise<boolean> {
+    const getCode = await this.redis.get(`code:${phoneNumber}`);
+    const toNumGetCode = Number(getCode);
+    if (toNumGetCode === InputCode) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  async getTtl(phoneNumber: string): Promise<boolean> {
+    const getTtl = await this.redis.ttl(`code:${phoneNumber}`);
+    if (getTtl == -2) return false;
+    else return true;
   }
 }
