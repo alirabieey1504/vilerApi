@@ -14,6 +14,12 @@ export class VerifyCodeRepository implements ISaveCodeRepository {
   async verifyCode(phoneNumber: string, InputCode: number): Promise<boolean> {
     const getCode = await this.redis.get(`code:${phoneNumber}`);
     const toNumGetCode = Number(getCode);
+    if (InputCode == null) {
+      return false;
+    }
+    if (getCode == null) {
+      return false;
+    }
     if (toNumGetCode === InputCode) {
       return true;
     } else {

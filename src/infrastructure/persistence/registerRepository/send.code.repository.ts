@@ -17,13 +17,10 @@ export class SendCodeRepository implements ICodeSenderRepository {
           message: String(code),
         },
         (response, status) => {
-          console.log(status, 'this is status');
-
           if (status !== 200) {
             reject(new Error(`SMS API failed: ${status}`));
             return;
           }
-
           if (Array.isArray(response)) {
             resolve(response);
           } else {

@@ -9,18 +9,7 @@ import { SendCodeRepository } from '../../infrastructure/persistence/registerRep
 import { VerifyCodeRepository } from '../../infrastructure/persistence/registerRepository/verify.code.repository';
 import Redis from 'ioredis';
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([UserEntity]),
-    // CacheModule.registerAsync({
-    //   isGlobal: true,
-    //   useFactory: () => ({
-    //     store: redisStore,
-    //     host: 'localhost',
-    //     port: 6379,
-    //     ttl: 120,
-    //   }),
-    // }),
-  ],
+  imports: [TypeOrmModule.forFeature([UserEntity])],
   controllers: [UserController],
   providers: [
     RegisterUserUseCase,

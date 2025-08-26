@@ -35,11 +35,11 @@ export class RegisterUserUseCase {
       const getTtl = await this.SaveRepo.getTtl(phoneNumber);
       if (getTtl == false) {
         const result = await this.userRepo.save(user);
-        const result3 = await this.SaveRepo.saveCode(phoneNumber, code);
-        const result2 = await this.CodeRepo.sendToSms(phoneNumber, code);
+        await this.SaveRepo.saveCode(phoneNumber, code);
+        await this.CodeRepo.sendToSms(phoneNumber, code);
         return {
           res: result,
-          res2: result2,
+          status: 200,
         };
       } else
         return {
