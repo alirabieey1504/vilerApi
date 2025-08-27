@@ -52,11 +52,13 @@ export class RegisterUserUseCase {
         return {
           message: 'با موفقیت وارد شدید',
           status: 200,
+          auth: true,
         };
       else
         return {
           message: 'کد وارد شده صحیح نمی باشد',
           status: 200,
+          auth: false,
         };
     } else {
       return {
