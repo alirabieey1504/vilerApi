@@ -9,7 +9,7 @@ export class VerifyCodeRepository implements ISaveCodeRepository {
     private redis: Redis,
   ) {}
   async saveCode(phoneNumber: string, code: number): Promise<void> {
-    await this.redis.set(`code:${phoneNumber}`, code, 'EX', 120);
+    await this.redis.set(`code:${phoneNumber}`, code, 'EX', 20);
   }
   async verifyCode(phoneNumber: string, InputCode: number): Promise<boolean> {
     const getCode = await this.redis.get(`code:${phoneNumber}`);
