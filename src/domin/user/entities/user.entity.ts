@@ -23,6 +23,9 @@ export class User {
       throw new Error('pleas enter 5 count number');
     }
   }
+  get GetID() {
+    return this.id;
+  }
   get GetCode() {
     return this.code;
   }

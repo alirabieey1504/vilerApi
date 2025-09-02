@@ -25,7 +25,7 @@ export class UserTypeOrmRepository implements IUserRepository {
       };
     } else {
       const entity = repo.create({
-        id: user.id,
+        id: user.GetID,
         phoneNumber: user.phoneNumber,
         role: user.role,
       });
