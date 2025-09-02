@@ -1,7 +1,6 @@
 //منطق ثبت نام کاربر
-import { User, UserRole } from '../../../domin/user/entities/user.entity';
+import { User } from '../../../domin/user/entities/user.entity';
 import { Injectable, Inject } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
 import type { IUserRepository } from '../../../domin/user/interfaces/IUser.repository.interface';
 import type { ICodeSenderRepository } from 'src/domin/user/interfaces/ICodeSender.repository.interface';
 import type { ISaveCodeRepository } from 'src/domin/user/interfaces/ISaveCode.repository.interface';
@@ -25,18 +24,16 @@ export class RegisterUserUseCase {
       return { message: 'please enter step', status: 404 };
     }
 
-    const id: string = uuidv4();
     const convertToNum = Number(InputCode);
-    const randomCode = Math.random() * 1000000;
-    const code = Number(String(randomCode).slice(0, 5));
-    const user = new User(id, phoneNumber, UserRole.PASSENGER);
+
+    const user = new User(phoneNumber);
 
     if (step == 1) {
       const getTtl = await this.SaveRepo.getTtl(phoneNumber);
       if (getTtl == false) {
         const result = await this.userRepo.save(user);
-        await this.SaveRepo.saveCode(phoneNumber, code);
-        await this.CodeRepo.sendToSms(phoneNumber, code);
+        await this.SaveRepo.saveCode(phoneNumber, user.GetCode);
+        await this.CodeRepo.sendToSms(phoneNumber, user.GetCode);
         return {
           res: result,
           status: 200,
